@@ -29,7 +29,12 @@ namespace EF2SQLLibrary {
             if (dbuser == null) { throw new Exception("No user with that ID"); }
             dbuser.Username = user.Username;
             dbuser.Password = user.Password;
-            //do the rest of the colum names
+            dbuser.FirstName = user.FirstName;
+            dbuser.LastName = user.LastName;
+            dbuser.Phone = user.Phone;
+            dbuser.Email = user.Email;
+            dbuser.IsReviewer = user.IsReviewer;
+            dbuser.IsAdmin = user.IsAdmin;
             return context.SaveChanges() == 1;
         }
 
