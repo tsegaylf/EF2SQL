@@ -8,6 +8,11 @@ namespace EF2SQLLibrary {
     public class RequestRepository {
 
         private static PrsDBContext context = new PrsDBContext();
+        public static string RequestNew = "NEW";
+        public static string RequestEdit = "EDIT";
+        public static string RequestReview = "REVIEW";
+        public static string RequestApproved = "APPROVED";
+        public static string RequestRejected = "REJECTED";
 
         public static List<Requests> GetAll() {
             return context.Requests.ToList();
@@ -48,9 +53,29 @@ namespace EF2SQLLibrary {
         }
         public static bool Delete(int id) {
             var request = context.Requests.Find(id);
-            if (request == null) { return false; }
+            if (request == null) { return false; } //you don't really need this because this calls on the DELETE method above
             var rc = Delete(request);
             return context.SaveChanges() == 1;
+        }
+
+        public static void Review(int id) {
+            SetStatus(id, RequestReview);
+
+        }
+        public static void Approved(int id) {
+            SetStatus(id, RequestReview);
+
+        }
+        public static void Rejected(int id) {
+            SetStatus(id, RequestReview);
+        }
+
+        private static void SetStatus(int id, string status) {
+            var request = GetByPk(id);
+            if(request == null) { throw new Exception("No request with that ID."); }
+            request.Status = status;
+            var success = Update(request);
+            if (!success) { throw new Exception("Request update failed!"); }
         }
     }
 }

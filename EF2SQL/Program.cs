@@ -9,7 +9,7 @@ namespace EF2SQL {
             //Create instance of the context
             using (var context = new PrsDBContext()) {
 
-                #region Examples
+                #region Insert/Delete/Update Examples
                 //update a request into SQL table
                 //var request = new Requests() {
                 //    Id = 0,
@@ -66,7 +66,6 @@ namespace EF2SQL {
                 //        $"{request1.Product.Price.ToString("C"),10} " +
                 //        $"{(request1.Product.Price * request1.Quantity).ToString("C"),11}");
                 //});
-                #endregion
 
                 //Tally up grand total of all request
                 //var reqs = (from r in context.Requests
@@ -77,21 +76,77 @@ namespace EF2SQL {
 
                 //context.SaveChanges();
 
-                var total = context.Requests.Sum(r => r.Total);
-                    Console.WriteLine($"Total of all request is {total}");
+                //var total = context.Requests.Sum(r => r.Total);
+                //    Console.WriteLine($"Total of all request is {total}");
+                #endregion
+
+                #region ToList Example
+                //var users = from u in context.Users.ToList()
+                //            where u.Username.Contains("5") || u.Username.Contains("8")
+                //            select u;
+
+                //foreach (var user in users) {
+                //    Console.WriteLine($"{user.Username} {user.FirstName} {user.LastName}");
+                //}
+                #endregion
+
+                Console.WriteLine("LIST USERS");
+                var users = context.Users.ToList();
+                users.ForEach(user => Console.WriteLine($"UserID = {user.Id} Name = {user.FirstName} {user.LastName} " +
+                    $"Phone = {user.Phone} Email = {user.Email} IsAdmin = {user.IsAdmin} IsReviewer = {user.IsReviewer}"));
+
+                Console.WriteLine("FIND VENDORS");
+                var vendor = context.Vendors.Find(5);
+                Console.WriteLine($"VendorID = {vendor.Id} Code = {vendor.Code} Name = {vendor.Name}" +
+                    $"Address = {vendor.Address}, {vendor.City}, {vendor.State} {vendor.Zip}" +
+                    $"Phone = {vendor.Phone} Email = {vendor.Email}");
+
+                Console.WriteLine("PRODUCT INSERT");
+                var product = new Products() {
+                    PartNbr = "KSD33",
+                    Name = "Notepads",
+                    Price = 64,
+                    Unit = "Each",
+                    PhotoPath = null,
+                    VendorId = 5,
+                };
+                context.Products.Add(product);
+                context.SaveChanges();
+
+                product = context.Products.Find(14);
+                Console.WriteLine($"{product.Id} {product.PartNbr} {product.Name} {product.Price}");
+
+                Console.WriteLine("REQUEST UPDATE");
+                var request = context.Requests.Find(5);
+                request.Description = "New New Request";
+                context.Requests.Update(request);
+                context.SaveChanges();
+                Console.WriteLine($"{request.Id} {request.Description} {request.Total}");
+
+                //Console.WriteLine("PRODUCT DELETE");
+                //var dpro = context.Products.Find(3);
+                //context.Products.Remove(dpro);
+                //context.SaveChanges();
+
+                /////////////////////////////////////////////////////////////////
+
+                //Console.WriteLine("REQUESTLINE INSERT");
+                //var rline = new RequestLines() {
+                //    Quantity = 2,
+                //};
+                //context.RequestLines.Add(rline);
+                //context.SaveChanges();
+
+                //rline = context.RequestLines.Find();
+                //Console.WriteLine($"{rline.ProductId} {rline.Product} {rline.Quantity}");
 
 
-                    #region ToList Example
-                    //var users = from u in context.Users.ToList()
-                    //            where u.Username.Contains("5") || u.Username.Contains("8")
-                    //            select u;
+                //Console.WriteLine("REQUESTLINE DELETE");
+                //var users = context.Users.ToList();
+                //users.ForEach(user => Console.WriteLine($"UserID = {user.Id} Name = {user.FirstName} {user.LastName} " +
+                //    $"Phone = {user.Phone} Email = {user.Email} IsAdmin = {user.IsAdmin} IsReviewer = {user.IsReviewer}"));
 
-                    //foreach (var user in users) {
-                    //    Console.WriteLine($"{user.Username} {user.FirstName} {user.LastName}");
-                    //}
-                    #endregion
-
-                }
+            }
 
         }
     }
